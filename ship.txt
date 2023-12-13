@@ -1,0 +1,4 @@
+
+<html>
+<img  src="ship.jpg" width="40%" height="100%">
+</html>

@@ -1,0 +1,93 @@
+
+
+<html dir="rtl">
+<table  border="0" align="center" width="50%" height="50%" BGCOLOR="white">
+<tr ><td ><IMG src="clg.jpg" width="250" height="100"></td></tr>
+<tr align="right"><td >LogIn</td></tr>
+<tr ><td align="right" bgcolor="white"><input type="text" id="usrName" value="User Name" ></td></tr>
+<tr><td><input type="password" id="passw" value="Password"></td></tr>
+<tr><td><input type="checkbox" value="Remmber me"> remmber my data</td></tr>
+<tr><td><input type="button" value="Ok" onclick="add_number()" ></td></tr>
+<tr><td><input type="text" id="mrslt" value="Result" ></td></tr>
+
+</table>
+
+
+  <script>
+    let db;
+    const dbName = 'myLocalDB';
+    const dbVersion = 1;
+
+    const request = indexedDB.open(dbName, dbVersion);
+
+    request.onerror = function(event) {
+      console.error("Database error: " + event.target.errorCode);
+    };
+
+    request.onupgradeneeded = function(event) {
+      db = event.target.result;
+
+      const objectStore = db.createObjectStore('contacts', { keyPath: 'id', autoIncrement: true });
+
+      objectStore.createIndex('name', 'name', { unique: false });
+      objectStore.createIndex('email', 'email', { unique: true });
+
+      console.log('Database setup complete');
+    };
+
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      console.log('Database opened successfully');
+    };
+
+    function addContact(contact) {
+      const transaction = db.transaction(['contacts'], 'readwrite');
+      const objectStore = transaction.objectStore('contacts');
+      const request = objectStore.add(contact);
+
+      request.onsuccess = function() {
+        console.log('Contact added successfully');
+      };
+
+      request.onerror = function(event) {
+        console.error('Error adding contact: ' + event.target.errorCode);
+      };
+    }
+
+    function getContacts() {
+      const transaction = db.transaction(['contacts'], 'readonly');
+      const objectStore = transaction.objectStore('contacts');
+      const request = objectStore.getAll();
+
+      request.onsuccess = function(event) {
+        const contacts = event.target.result;
+        console.log('Contacts:', contacts);
+        // Do something with the retrieved contacts
+      };
+
+      request.onerror = function(event) {
+        console.error('Error getting contacts: ' + event.target.errorCode);
+      };
+    }
+
+    // Example usage
+    const newContact = { name: 'John Doe', email: 'john@example.com' };
+    addContact(newContact);
+    getContacts();
+
+
+
+
+ function add_number() {
+  
+            var first_number = parseInt(document.getElementById("usrName").value);
+            var second_number = parseInt(document.getElementById("passw").value);
+
+            var result = first_number + second_number;
+
+            document.getElementById("mrslt").value = result;
+             //document.writeln(result);
+             
+       				}
+</script>
+</html>
